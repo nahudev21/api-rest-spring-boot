@@ -26,7 +26,7 @@ public class UserController {
         }
 
         userService.createdUser(user);
-        return ResponseEntity.created(new URI("/users/created")).build();
+        return ResponseEntity.created(new URI("/users/create")).build();
 
     }
 
