@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ValueGenerationType;
 
 import java.time.LocalDate;
 
@@ -36,19 +35,19 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "id_user")
     @JsonBackReference("id_user")
-    private User user;
+    private UserEntity userEntity;
 
     public Task() {
     }
 
     public Task(Long id_task, String title, String description,
-                LocalDate creationDate, String state, User user) {
+                LocalDate creationDate, String state, UserEntity userEntity) {
         this.id_task = id_task;
         this.title = title;
         this.description = description;
         this.creationDate = creationDate;
         this.state = state;
-        this.user = user;
+        this.userEntity = userEntity;
     }
 
     @Override
@@ -59,7 +58,7 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", creationDate=" + creationDate +
                 ", state='" + state + '\'' +
-                ", user=" + user +
+                ", user=" + userEntity +
                 '}';
     }
 }

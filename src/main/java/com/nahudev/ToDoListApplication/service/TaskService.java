@@ -29,7 +29,7 @@ public class TaskService implements ITaskService {
         taskEdited.setDescription(task.getDescription());
         taskEdited.setCreationDate(task.getCreationDate());
         taskEdited.setState(task.getState());
-        taskEdited.setUser(task.getUser());
+        taskEdited.setUserEntity(task.getUserEntity());
 
         taskRepository.save(taskEdited);
 

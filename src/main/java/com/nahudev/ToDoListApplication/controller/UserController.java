@@ -1,6 +1,6 @@
 package com.nahudev.ToDoListApplication.controller;
 
-import com.nahudev.ToDoListApplication.model.User;
+import com.nahudev.ToDoListApplication.model.UserEntity;
 import com.nahudev.ToDoListApplication.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +19,23 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody User user) throws URISyntaxException {
+    public ResponseEntity<?> createUser(@RequestBody UserEntity userEntity) throws URISyntaxException {
 
-        if (user.getEmail().isBlank()) {
+        if (userEntity.getEmail().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
 
-        userService.createdUser(user);
+        userService.createdUser(userEntity);
         return ResponseEntity.created(new URI("/users/create")).build();
 
     }
 
     @PutMapping("/edit/{id_user}")
-    public ResponseEntity<?> editUser(@PathVariable Long id_user,@RequestBody User user) {
+    public ResponseEntity<?> editUser(@PathVariable Long id_user,@RequestBody UserEntity userEntity) {
 
-        Optional<User> userFound = userService.getUser(id_user);
+        Optional<UserEntity> userFound = userService.getUser(id_user);
         if (userFound.isPresent()) {
-            userService.editUser(id_user, user);
+            userService.editUser(id_user, userEntity);
             return ResponseEntity.ok("Usuario editado exitosamente!");
         }
 
@@ -59,7 +59,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> getUser(@PathVariable Long id_user) {
 
-        Optional<User> userFound = userService.getUser(id_user);
+        Optional<UserEntity> userFound = userService.getUser(id_user);
 
         if (userFound.isPresent()) {
             return ResponseEntity.ok(userFound);
@@ -72,10 +72,10 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> getAllUsers() {
 
-        List<User> userList = userService.getAllUsers();
+        List<UserEntity> userEntityList = userService.getAllUsers();
 
-        if (userList != null) {
-            return ResponseEntity.ok(userList);
+        if (userEntityList != null) {
+            return ResponseEntity.ok(userEntityList);
         }
 
         return ResponseEntity.badRequest().build();
