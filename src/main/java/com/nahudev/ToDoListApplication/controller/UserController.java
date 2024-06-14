@@ -1,7 +1,11 @@
 package com.nahudev.ToDoListApplication.controller;
 
+import com.nahudev.ToDoListApplication.dto.CreateUserDTO;
+import com.nahudev.ToDoListApplication.model.ERole;
+import com.nahudev.ToDoListApplication.model.RoleEntity;
 import com.nahudev.ToDoListApplication.model.UserEntity;
 import com.nahudev.ToDoListApplication.service.IUserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +14,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -19,14 +25,30 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody UserEntity userEntity) throws URISyntaxException {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) throws URISyntaxException {
 
-        if (userEntity.getEmail().isBlank()) {
+        if (createUserDTO.getEmail().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
 
+        Set<RoleEntity> roles = createUserDTO.getRoles().stream()
+                .map(role -> RoleEntity.builder()
+                        .name(ERole.valueOf(role))
+                        .build())
+                .collect(Collectors.toSet());
+
+        UserEntity userEntity = UserEntity.builder()
+                .name(createUserDTO.getName())
+                .lastName(createUserDTO.getLastName())
+                .birthdate(createUserDTO.getBirthdate())
+                .username(createUserDTO.getUsername())
+                .email(createUserDTO.getEmail())
+                .password(createUserDTO.getPassword())
+                .roles(roles)
+                .build();
+
         userService.createdUser(userEntity);
-        return ResponseEntity.created(new URI("/users/create")).build();
+        return ResponseEntity.ok(userEntity);
 
     }
 

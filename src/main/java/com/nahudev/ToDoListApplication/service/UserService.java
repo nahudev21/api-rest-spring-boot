@@ -1,5 +1,6 @@
 package com.nahudev.ToDoListApplication.service;
 
+import com.nahudev.ToDoListApplication.dto.CreateUserDTO;
 import com.nahudev.ToDoListApplication.model.UserEntity;
 import com.nahudev.ToDoListApplication.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ public class UserService implements IUserService {
 
     @Autowired
     private IUserRepository userRepository;
+
 
     @Override
     public void createdUser(UserEntity userEntity) {
