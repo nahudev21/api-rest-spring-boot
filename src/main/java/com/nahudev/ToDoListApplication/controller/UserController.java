@@ -8,7 +8,7 @@ import com.nahudev.ToDoListApplication.service.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -26,7 +26,7 @@ public class UserController {
     private IUserService userService;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) throws URISyntaxException {
@@ -47,7 +47,7 @@ public class UserController {
                 .birthdate(createUserDTO.getBirthdate())
                 .username(createUserDTO.getUsername())
                 .email(createUserDTO.getEmail())
-                .password(bCryptPasswordEncoder.encode(createUserDTO.getPassword()))
+                .password(passwordEncoder.encode(createUserDTO.getPassword()))
                 .roles(roles)
                 .build();
 

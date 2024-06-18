@@ -1,5 +1,9 @@
 package com.nahudev.ToDoListApplication.security;
 
+import com.nahudev.ToDoListApplication.security.filters.JwtAuthenticationFilter;
+import com.nahudev.ToDoListApplication.security.jwt.JwtUtils;
+import com.nahudev.ToDoListApplication.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,23 +23,33 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+
     @Bean
-    @SuppressWarnings("removal")
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
+
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
+        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+
         return httpSecurity
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/sinseguridad").permitAll();
+                    auth.requestMatchers("/sinseguridad", "/users/create").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
-                .httpBasic()
-                .and()
+                .addFilter(jwtAuthenticationFilter)
                 .build();
     }
 
+    /*Usuario guardado en memoria como prueba
     @Bean
     UserDetailsService userDetailsService() {
 
@@ -46,7 +60,7 @@ public class SecurityConfig {
                 .build());
 
         return manager;
-    }
+    }*/
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -57,7 +71,7 @@ public class SecurityConfig {
     @SuppressWarnings("removal")
     AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder) throws Exception {
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService())
+                .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder)
                 .and().build();
 
