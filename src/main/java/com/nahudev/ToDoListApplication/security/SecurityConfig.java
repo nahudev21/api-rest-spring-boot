@@ -1,6 +1,7 @@
 package com.nahudev.ToDoListApplication.security;
 
 import com.nahudev.ToDoListApplication.security.filters.JwtAuthenticationFilter;
+import com.nahudev.ToDoListApplication.security.filters.JwtAuthorizationFilter;
 import com.nahudev.ToDoListApplication.security.jwt.JwtUtils;
 import com.nahudev.ToDoListApplication.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +30,9 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private JwtAuthorizationFilter authorizationFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
@@ -46,6 +51,7 @@ public class SecurityConfig {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
                 .addFilter(jwtAuthenticationFilter)
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
