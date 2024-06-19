@@ -4,6 +4,7 @@ import com.nahudev.ToDoListApplication.model.Task;
 import com.nahudev.ToDoListApplication.service.ITaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -19,6 +20,7 @@ public class TaskController {
     private ITaskService taskService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> createTask(@RequestBody Task task) throws URISyntaxException {
         if (task.getTitle().isBlank() || task.getDescription().isBlank() || task.getState().isBlank()) {
             return ResponseEntity.badRequest().build();
@@ -29,6 +31,7 @@ public class TaskController {
     }
 
     @PutMapping("/edit/{id_task}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> editTask(@PathVariable Long id_task, @RequestBody Task task) {
         Optional<Task> taskFound = taskService.getTask(id_task);
         if (taskFound.isPresent()) {
@@ -40,6 +43,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/delete/{id_task}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> deleteTask(@PathVariable Long id_task) {
         if (id_task != null) {
             taskService.deleteTask(id_task);
@@ -51,6 +55,7 @@ public class TaskController {
 
     @GetMapping("/getTask/{id_task}")
     @ResponseBody
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> getTask(@PathVariable Long id_task) {
         Optional<Task> taskFound = taskService.getTask(id_task);
         if (taskFound.isPresent()) {
@@ -61,6 +66,8 @@ public class TaskController {
     }
 
     @GetMapping("/getAllTasks")
+    @ResponseBody
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> getAllTasks() {
         List<Task> taskList = taskService.getAllTasks();
         if (taskList != null) {

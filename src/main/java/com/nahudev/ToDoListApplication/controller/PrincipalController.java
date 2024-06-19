@@ -6,13 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PrincipalController {
-    @GetMapping("/sinseguridad")
-    public String sinseguridad() {
-        return "Sin seguridad";
+
+    @GetMapping("/index")
+    public String index() {
+        return "Este es el index de la aplicacion";
     }
 
-    @GetMapping("/conseguridad")
-    public String conseguridad() {
-        return "con seguridad";
-    }
 }

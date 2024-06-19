@@ -8,6 +8,7 @@ import com.nahudev.ToDoListApplication.service.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) throws URISyntaxException {
 
         if (createUserDTO.getEmail().isBlank()) {
@@ -57,6 +59,7 @@ public class UserController {
     }
 
     @PutMapping("/edit/{id_user}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> editUser(@PathVariable Long id_user,@RequestBody UserEntity userEntity) {
 
         Optional<UserEntity> userFound = userService.getUser(id_user);
@@ -70,6 +73,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id_user}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long id_user) {
 
         if (id_user != null) {
@@ -83,6 +87,7 @@ public class UserController {
 
     @GetMapping("/getUser/{id_user}")
     @ResponseBody
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUser(@PathVariable Long id_user) {
 
         Optional<UserEntity> userFound = userService.getUser(id_user);
@@ -96,6 +101,7 @@ public class UserController {
 
     @GetMapping("/getAllUsers")
     @ResponseBody
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
 
         List<UserEntity> userEntityList = userService.getAllUsers();
