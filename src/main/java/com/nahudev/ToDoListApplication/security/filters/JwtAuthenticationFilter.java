@@ -1,15 +1,12 @@
 package com.nahudev.ToDoListApplication.security.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nahudev.ToDoListApplication.model.Token;
 import com.nahudev.ToDoListApplication.model.UserEntity;
-import com.nahudev.ToDoListApplication.repository.ITokenRepository;
 import com.nahudev.ToDoListApplication.security.jwt.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,9 +22,6 @@ import java.util.Map;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private JwtUtils jwtUtils;
-
-    @Autowired
-    private ITokenRepository tokenRepository;
 
     public JwtAuthenticationFilter(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
@@ -60,7 +54,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-
         User user = (User) authResult.getPrincipal();
         String token = jwtUtils.generateAccesToken(user.getUsername());
 
@@ -77,14 +70,4 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         super.successfulAuthentication(request, response, chain, authResult);
     }
-
-    private void savedUserToken(String token, UserEntity userEntity) {
-
-        Token tokenEntity = new Token();
-        tokenEntity.setToken(token);
-        tokenEntity.setLoggedOut(false);
-        tokenEntity.setUserEntity(userEntity);
-        tokenRepository.save(tokenEntity);
-    }
-
 }

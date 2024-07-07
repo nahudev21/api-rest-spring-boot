@@ -53,9 +53,6 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "id_rol"))
     private Set<RoleEntity> roles;
 
-    @OneToMany(mappedBy = "userEntity")
-    private List<Token> tokens;
-
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.PERSIST)
     private List<Task> listTasks;
 
@@ -63,8 +60,7 @@ public class UserEntity {
     }
 
     public UserEntity(Long id_user, String name, String lastName, LocalDate birthdate, String username,
-                      String email, String password, Set<RoleEntity> roles, List<Token> tokens,
-                      List<Task> listTasks) {
+                      String email, String password, Set<RoleEntity> roles, List<Task> listTasks) {
         this.id_user = id_user;
         this.name = name;
         this.lastName = lastName;
@@ -73,7 +69,6 @@ public class UserEntity {
         this.email = email;
         this.password = password;
         this.roles = roles;
-        this.tokens = tokens;
         this.listTasks = listTasks;
     }
 
@@ -88,7 +83,6 @@ public class UserEntity {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
-                ", tokens=" + tokens +
                 ", listTasks=" + listTasks +
                 '}';
     }
